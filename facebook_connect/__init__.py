@@ -8,9 +8,10 @@ from registration import signals
 
 from facebook_connect.views import _verify_signature
 from facebook_connect.models import FacebookProfile
+import facebook_connect.settings
 
 class FacebookConnectBackend(object):
-    
+
     def register(self, request, **kwargs):
         params = _verify_signature(request.COOKIES)
         if params and params['user'] != 'None':
@@ -34,13 +35,13 @@ class FacebookConnectBackend(object):
                         user=user_obj,
                         uid=uid
                     )
-            
+
             signals.user_registered.send(
                 sender=self.__class__,
                 user=user_obj,
                 request=request
             )
-            
+
             user = authenticate(uid=uid)
             login(request, user)
         elif request.user.is_authenticated():
@@ -49,21 +50,21 @@ class FacebookConnectBackend(object):
             # Perhaps we should handle this differently?
             user_obj = AnonymousUser()
         return user_obj
-    
+
     def registration_allowed(self, request):
-        return getattr(settings, 'REGISTRATION_OPEN', True)
-    
+        return facebook_connect.settings.REGISTRATION_OPEN
+
     def get_form_class(self, request):
         # Pass back an empty instance of the form class, because we are not using a registration form.
         return Form
-    
+
     def post_registration_redirect(self, request, user):
         if user is False:
             redirect_url = '/'
         else:
-            redirect_url = getattr(settings, 'FACEBOOK_POST_REGISTRATION_REDIRECT', settings.LOGIN_REDIRECT_URL)
+            redirect_url = facebook_connect.settings.FACEBOOK_POST_REGISTRATION_REDIRECT
         return (redirect_url, (), {})
-    
+
     def activate(self, request):
         return NotImplementedError
 
