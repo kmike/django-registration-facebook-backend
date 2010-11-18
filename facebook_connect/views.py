@@ -3,6 +3,7 @@ import hashlib
 from django.conf import settings
 from django.contrib.auth import login, authenticate
 from django.shortcuts import redirect, render_to_response
+import facebook_connect.settings
 
 def facebook_login(request):
     params = _verify_signature(request.COOKIES)
@@ -24,7 +25,7 @@ def facebook_login(request):
         return redirect('/', {}, ())
 
 def _verify_signature(cookies):
-    api_key = settings.FACEBOOK_API_KEY
+    api_key = facebook_connect.settings.FACEBOOK_API_KEY
     key_prefix = api_key + '_'
     params = dict()
     signature = ''
@@ -37,9 +38,9 @@ def _verify_signature(cookies):
             signature += '%s=%s' % (k, v)
 
     hashed = hashlib.md5(signature)
-    hashed.update(settings.FACEBOOK_SECRET_KEY)
+    hashed.update(facebook_connect.settings.FACEBOOK_SECRET_KEY)
 
-    if hashed.hexdigest() == cookies[api_key]:
+    if hashed.hexdigest() == cookies.get(api_key, ''):
         return params
     else:
         return False
