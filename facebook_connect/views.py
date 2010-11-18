@@ -24,6 +24,7 @@ def facebook_login(request):
     else:
         return redirect('/', {}, ())
 
+
 def _verify_signature(cookies):
     api_key = facebook_connect.settings.FACEBOOK_API_KEY
     key_prefix = api_key + '_'
