@@ -8,7 +8,7 @@ import facebook_connect.settings
 def facebook_login(request):
     params = _verify_signature(request.COOKIES)
     if params:
-        user = authenticate(uid=params['user'])
+        user = authenticate(facebook_uid=params['user'])
         if user is not None:
             if user.is_active:
                 login(request, user)
