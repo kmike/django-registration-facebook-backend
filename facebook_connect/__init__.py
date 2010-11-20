@@ -37,7 +37,7 @@ class FacebookConnectBackend(object):
                 request=request
             )
 
-            user = authenticate(uid=uid)
+            user = authenticate(facebook_uid=uid)
             login(request, user)
         elif request.user.is_authenticated():
             user_obj = request.user
