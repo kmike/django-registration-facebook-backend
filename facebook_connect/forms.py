@@ -6,17 +6,6 @@ from django.contrib.auth.forms import AuthenticationForm
 class LoginForm(AuthenticationForm):
     username = forms.CharField(max_length=30, widget=forms.HiddenInput)
 
-    def __init__(self, request=None, *args, **kwargs):
-        """
-        If request is passed in, the form will validate that cookies are
-        enabled. Note that the request (a HttpRequest object) must have set a
-        cookie with the key TEST_COOKIE_NAME and value TEST_COOKIE_VALUE before
-        running this validation.
-        """
-        self.request = request
-        self.user_cache = None
-        super(AuthenticationForm, self).__init__(*args, **kwargs)
-
     def clean(self):
         # this is overriden in order to provide more
         # helpful validation error message
